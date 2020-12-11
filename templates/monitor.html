@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test101</title>
+    <style>
+        .header {
+            overflow: hidden;
+            background-color: #666;
+            padding: 5px;
+            padding-left: 30px;
+            text-align: left;
+            text-decoration: none;
+            color: white;
+        }
+        .header a {
+            float: left;
+            color: white;
+            text-align: center;
+            padding: 12px;
+            text-decoration: none;
+            
+            line-height: 25px;
+            border-radius: 4px;
+        }
+        .header-right {
+        float: right;
+        margin-right: 20px;
+        font-size: 15px;
+        }
+
+        @media screen and (max-width: 500px) {
+        .header p {
+            float: none;
+            display: block;
+            text-align: left;
+            text-decoration: none;
+        }
+        
+        .header-right {
+            float: none;
+        }
+        }
+        body {
+            background-color:  #e0ebeb;
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        div {
+          color: black; 
+          text-align: center;  
+          font-size: 12px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 10%;    
+            text-align: center; 
+            margin-top: 10px;
+            margin-left: 5px;
+        }
+        .serial{
+            width: 80px;
+            height: 40px;
+        }
+        .button {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: auto;
+            text-align: left ;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 12px;
+            margin: 4px 2px;
+            transition-duration: 0.4s;
+            cursor: pointer;
+            width: auto;
+            height: 40px;
+        }
+        .buttonB {
+            background-color: #4CAF50; /* Green */
+            color: white;
+            display: inline-block;
+            font-size: 10px;
+            margin: auto;
+            padding: 5px;
+            transition-duration: 0.4s;
+            cursor: pointer;
+            width: auto;
+        }
+        .buttonB:hover {
+            background-color: white;
+            color: black;
+        }
+        .button:hover {
+            background-color: white;
+            color: black;
+        }
+        .button1 {
+            background-color: #4CAF50; 
+            color: white; 
+            border: 2px solid #4CAF50;
+        }
+
+        .button2 {
+            background-color: #858484; 
+            color: white; 
+            border: 2px solid #858484;
+        }
+
+        .button3 {
+            background-color: #f44336; 
+            color: white; 
+            border: 2px solid #f44336;
+        }
+        .column {
+            border-style: groove;
+            margin: 10px;
+            padding: 15px;
+            float: left;
+            width: auto;
+            background-color: white;
+        }
+
+        /* Clear floats after the columns */
+        .row:after {
+        content: "";
+        display: table;
+        clear: both;
+        }
+
+        /* Responsive layout - makes the three columns stack on top of each other instead of next to each other */
+        @media screen and (max-width:600px) {
+        .column {
+            width: 100%;
+        }
+        }
+        a {
+            text-decoration: none;
+        }
+
+
+    </style>
+</head>
+<body>
+    <div  class="header">
+        <a style="font-size: 20px; ">Name : {{ListName['Name']}}</a>
+            <!-- <p>Name : {{ListName['Name']}}</p> -->
+            <div class="header-right">
+                <a style="font-size: 15px; " href="/" class="buttonB">Disconnect</a>
+            </div>
+    </div>
+    
+    <div class="row">
+        <div class="column">
+            <h2 style="font-size: 20px; margin-left:10px; text-align: left;">Port Status</h2>
+            <p style="text-align: left; margin-left:10px;"><a style="color: #4CAF50 ; background-color: #4CAF50;">COLO</a>  Up
+                <a style="color:  #858484 ; background-color:  #858484;">COLO</a>  Down</p>
+          <table border="2px solid">
+            <tr>
+            <!-- Loop ตามจำนวน Key ที่อยู่ใน ListDic -->
+            {% for p_id, p_info  in ListDic.items() %} 
+                {% if ListDic[p_id]['Type'] != '1' and 
+                        ListDic[p_id]['Type'] != '24' and 
+                        ListDic[p_id]['Type'] != '22' and
+                        'No more variables' not in ListDic[p_id]['Type'] and
+                        ListDic[p_id]['ROW'] %}
+              
+            <td>
+             <form action="/monitor" method="POST">
+                
+                <!-- <div>{{p_id}}</div> -->
+                <!-- <div>AdminStatus : {{ListDic[p_id]['ROW']}}</div> -->
+                <!-- <div>OpenStatus :{{ListDic[p_id]['OpenStatus']}}</div> -->
+                <!-- <div>Type :{{ListDic[p_id]['Type']}}</div> -->
+                <!-- ส่ง OID  -->
+                <input type="hidden" name="OID" value="{{ListDic[p_id]['OIDadmin']}}"> 
+                <!-- ส่ง AdminStatus  -->
+                {% if ListDic[p_id]['AdminStatus']=='Up' %}
+                    <button type="submit"  class="button button1 " name="AdminStatus" value={{ListDic[p_id]['AdminStatus']}}>{{p_id}}</button>
+                {% elif ListDic[p_id]['AdminStatus']=='Down' %}
+                    <button type="submit"  class="button button2" name="AdminStatus" value={{ListDic[p_id]['AdminStatus']}}>{{p_id}}</button>
+                {% endif %}
+              
+             </form> 
+            </td>
+                {% endif %}
+            {% endfor %}
+            </tr>
+            <tr>
+                <!-- Loop ตามจำนวน Key ที่อยู่ใน ListDic -->
+                {% for p_id, p_info  in ListDic.items() %} 
+                    {% if ListDic[p_id]['Type'] != '1' and 
+                            ListDic[p_id]['Type'] != '24' and 
+                            ListDic[p_id]['Type'] != '22' and
+                            'No more variables' not in ListDic[p_id]['Type'] and
+                            not ListDic[p_id]['ROW']%}
+                  
+                <td>
+                 <form action="/monitor" method="POST">
+                    <!-- <div>{{p_id}}</div> -->
+                    <input type="hidden" name="OID" value="{{ListDic[p_id]['OIDadmin']}}"> 
+                    {% if ListDic[p_id]['AdminStatus']=='Up' %}
+                        <button type="submit"  class="button button1" name="AdminStatus" value={{ListDic[p_id]['AdminStatus']}}>{{p_id}}</button>
+                    {% elif ListDic[p_id]['AdminStatus']=='Down' %}
+                        <button type="submit"  class="button button2" name="AdminStatus" value={{ListDic[p_id]['AdminStatus']}}>{{p_id}}</button>
+                    {% endif %}
+                 </form>
+                </td>
+                    {% endif %}
+                {% endfor %}
+                </tr>
+        </table>
+        </div>
+        {% if ListName['Serial_PORT'] %}
+        <div class="column">
+            <h2 style="font-size: 20px; margin-left:10px; text-align: left;">Port Serial </h2>
+            <p style="text-align: left; margin-left:10px;"><a style="color: #4CAF50 ; background-color: #4CAF50;">COLO</a>  Up
+                <a style="color:  #858484 ; background-color:  #858484;">COLO</a>  Down</p>
+          <table border="2px solid">
+            
+            <!-- Loop ตามจำนวน Key ที่อยู่ใน ListDic -->
+            {% for p_id, p_info  in ListDic.items() %} 
+            <tr>
+                {% if ListDic[p_id]['Type'] == '22' %}
+            
+            <td>
+             <form action="/monitor" method="POST">
+                
+                <!-- <div>{{p_id}}</div> -->
+                <!-- <div>AdminStatus : {{ListDic[p_id]['ROW']}}</div> -->
+                <!-- <div>OpenStatus :{{ListDic[p_id]['OpenStatus']}}</div> -->
+                <!-- <div>Type :{{ListDic[p_id]['Type']}}</div> -->
+                <!-- ส่ง OID  -->
+                <input type="hidden" name="OID" value="{{ListDic[p_id]['OIDadmin']}}"> 
+                <!-- ส่ง AdminStatus  -->
+                {% if ListDic[p_id]['AdminStatus']=='Up' %}
+                    <button type="submit" style="width: 120px;" class="button button1 serial" name="AdminStatus" value={{ListDic[p_id]['AdminStatus']}}>{{p_id}}</button>
+                {% elif ListDic[p_id]['AdminStatus']=='Down' %}
+                    <button type="submit" style="width: 120px;" class="button button2 serial" name="AdminStatus" value={{ListDic[p_id]['AdminStatus']}}>{{p_id}}</button>
+                {% endif %}
+              
+             </form> 
+            </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+            
+        </table>
+        </div>
+        {% endif %}
+       
+    </div>
+</body>
+</html>
